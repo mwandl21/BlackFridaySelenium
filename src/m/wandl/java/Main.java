@@ -7,11 +7,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class Main {
 	
 	static String[] ps4Keys = new String[] {"PS4", "PS 4", "PlayStation", "Play Station"};
+	static String[] airPodsKes = new String[] {"air","pod"};
 
 	public static void main(String[] args) {
 		System.setProperty("webdriver.chrome.driver", "/Users/mwandl/Documents/Projects/Selenium/chromedriver");
@@ -66,16 +66,13 @@ public class Main {
 	        
         }
 
-        // Check the title of the page
-        System.out.println("Page title is: " + driver.getTitle());
-
         driver.quit();
 
 	}
 	
 	static boolean isRequired(String[] keys, String product) {
 		for (String key : keys) {
-			if(product.contains(key)) return true;
+			if(product.toLowerCase().contains(key.toLowerCase())) return true;
 		}
 		return false;
 	}
