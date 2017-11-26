@@ -11,7 +11,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 public class Main {
 	
 	static String[] ps4Keys = new String[] {"PS4", "PS 4", "PlayStation", "Play Station"};
-	static String[] airPodsKes = new String[] {"air","pod"};
+	static String[] airPodsKeys = new String[] {"airpod", "pod"};
 
 	public static void main(String[] args) {
 		System.setProperty("webdriver.chrome.driver", "/Users/mwandl/Documents/Projects/Selenium/chromedriver");
@@ -40,33 +40,43 @@ public class Main {
 		}
         
         System.out.println("Found "+categories.size()+" categories");
-        
-        for(Category category : categories) {
-	        driver.get(category.getLink());
-	        System.out.println(driver.getTitle().toUpperCase());
-	        try {
-				WebElement productList = driver.findElement(By.id("product-list"));
+        int index = 0;
+        while(true) {
+        		int i = index % categories.size();
+        		driver.get(categories.get(i).getLink());
+    	        System.out.println(driver.getTitle().toUpperCase() + " - " + index);
+    	        try {
+    				WebElement productList = driver.findElement(By.id("product-list"));
 
-		        WebElement btnMore = productList.findElement(By.cssSelector("div.buttons-container.clearfix > div"));
-				while(btnMore != null && btnMore.isDisplayed()) {
-			        btnMore.click();
-					btnMore = productList.findElement(By.cssSelector("div.buttons-container.clearfix > div"));
-				}
-				
-				List<WebElement> products = productList.findElements(By.className("product-item__text__title"));
-				for (WebElement product : products) {
-					if(isRequired(ps4Keys, product.getText())) {
-						System.out.println("GEFUNDEN: " + product.getAttribute("href"));
-					}
-				}
-			} catch (Exception e) {
-				System.out.println("----- Keine Produkte vorhanden");
-			}
-	        
-	        
+    		        WebElement btnMore = productList.findElement(By.cssSelector("div.buttons-container.clearfix > div"));
+    				while(btnMore != null && btnMore.isDisplayed()) {
+    					try {
+    						btnMore.click();
+    					}
+    					catch (Exception e) {
+    						//nichts zu machen, nochmal probieren
+    					}
+    					btnMore = productList.findElement(By.cssSelector("div.buttons-container.clearfix > div"));
+    				}
+    				
+    				List<WebElement> titles = productList.findElements(By.className("product-item__text__title"));
+    				
+    				for (WebElement title : titles) {			
+    					if(isRequired(airPodsKeys, title.getText())) {
+    						System.out.println("---------------------");
+    						System.out.println(title.getText());
+    						System.out.println(title.getAttribute("href"));
+    						System.out.println("---------------------");
+    					}
+    				}
+    			} catch (Exception e) {
+    				if(e.getMessage() == null || !e.getMessage().contains("product-list")) {
+    					System.out.println(e);
+    				}
+    			}
+    	        
+        		index++;
         }
-
-        driver.quit();
 
 	}
 	
